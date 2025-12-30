@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv
+venv/
+ENV/
+env/
+.env
+*.bak
+*.swp
+
+# Node / Frontend
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# Database
+*.sqlite3
+alembic/versions/*.pyc
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
