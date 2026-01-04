@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
-import { getPresignedUrl, uploadToS3, registerCall } from '../api';
+import React, { useState, useEffect } from 'react';
+import { getPresignedUrl, uploadFile, registerCall, getStorageMode } from '../api';
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [storageMode, setStorageMode] = useState<'local' | 's3'>('local');
+
+  useEffect(() => {
+    // Check storage mode on component mount
+    getStorageMode().then(setStorageMode).catch(console.error);
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -17,15 +23,15 @@ const Upload = () => {
     if (!file) return;
 
     setUploading(true);
-    setMessage('Getting presigned URL...');
+    setMessage('Getting upload URL...');
 
     try {
-      // 1. Get presigned URL
+      // 1. Get upload URL (works for both S3 and local)
       const { upload_url, s3_key } = await getPresignedUrl(file.name, file.type || 'audio/wav');
       
-      setMessage('Uploading to S3...');
-      // 2. Upload to S3
-      await uploadToS3(upload_url, file, file.type || 'audio/wav');
+      setMessage(storageMode === 's3' ? 'Uploading to S3...' : 'Uploading file...');
+      // 2. Upload file (handles both S3 and local storage)
+      await uploadFile(upload_url, file, file.type || 'audio/wav', storageMode);
 
       setMessage('Registering call metadata...');
       // 3. Register metadata

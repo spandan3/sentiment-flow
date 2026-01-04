@@ -42,10 +42,36 @@ export const listCalls = async (): Promise<Call[]> => {
   return response.data;
 };
 
+export const getStorageMode = async (): Promise<'local' | 's3'> => {
+  const response = await axios.get(`${API_BASE_URL}/uploads/storage-mode`);
+  return response.data.mode;
+};
+
 export const uploadToS3 = async (url: string, file: File, contentType: string) => {
+  // S3 presigned URL upload (PUT request)
   await axios.put(url, file, {
     headers: {
       'Content-Type': contentType,
     },
   });
+};
+
+export const uploadToLocal = async (url: string, file: File) => {
+  // Local storage upload (POST request to backend)
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  await axios.post(url, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const uploadFile = async (uploadUrl: string, file: File, contentType: string, storageMode: 'local' | 's3') => {
+  if (storageMode === 's3') {
+    await uploadToS3(uploadUrl, file, contentType);
+  } else {
+    await uploadToLocal(uploadUrl, file);
+  }
 };

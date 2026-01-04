@@ -1,7 +1,8 @@
 # Support Auditor - Phase 0
 
 > 📖 **For detailed documentation, see [PHASE_0_REPORT.md](./PHASE_0_REPORT.md)**  
-> 🚀 **For step-by-step setup instructions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
+> 🚀 **For step-by-step setup instructions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md)**  
+> 💾 **Want to develop without AWS? See [LOCAL_STORAGE_GUIDE.md](./LOCAL_STORAGE_GUIDE.md)**
 
 ## Project Structure
 - `backend/`: FastAPI application
@@ -18,12 +19,17 @@
    ```
 3. Create a `.env` file with:
    ```
-   DATABASE_URL=postgresql://postgres:postgres@localhost:5432/support_auditor
-   AWS_ACCESS_KEY_ID=your_key
-   AWS_SECRET_ACCESS_KEY=your_secret
-   AWS_REGION=us-east-1
-   S3_BUCKET_NAME=your_bucket
+   # Database (Required)
+   DATABASE_URL=postgresql://postgres:your_password@db.xxxxx.supabase.co:5432/postgres
+   
+   # AWS S3 (Optional - leave empty for local storage mode)
+   # AWS_ACCESS_KEY_ID=your_key
+   # AWS_SECRET_ACCESS_KEY=your_secret
+   # AWS_REGION=us-east-1
+   # S3_BUCKET_NAME=your_bucket
    ```
+   
+   **Note:** You can develop without AWS S3! See [LOCAL_STORAGE_GUIDE.md](./LOCAL_STORAGE_GUIDE.md) for details.
 3. `pip install -r requirements.txt`
 4. Run migrations: `$env:PYTHONPATH="."; python -m alembic upgrade head`
 5. Start server: `uvicorn app.main:app --reload`

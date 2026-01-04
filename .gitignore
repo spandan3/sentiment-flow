@@ -24,6 +24,10 @@ dist/
 *.sqlite3
 alembic/versions/*.pyc
 
+# Local Storage (uploaded files)
+storage/
+backend/storage/
+
 # OS
 Thumbs.db
 ehthumbs.db
