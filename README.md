@@ -1,6 +1,7 @@
 # Support Auditor - Phase 0
 
-> 📖 **For detailed documentation, see [PHASE_0_REPORT.md](./PHASE_0_REPORT.md)**
+> 📖 **For detailed documentation, see [PHASE_0_REPORT.md](./PHASE_0_REPORT.md)**  
+> 🚀 **For step-by-step setup instructions, see [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
 
 ## Project Structure
 - `backend/`: FastAPI application
