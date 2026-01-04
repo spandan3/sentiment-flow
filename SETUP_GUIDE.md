@@ -31,9 +31,75 @@ git pull  # Get latest changes
 
 ---
 
-## Step 2: Set Up PostgreSQL Database
+## Step 2: Set Up PostgreSQL Database with Supabase
 
-### Option A: Local PostgreSQL (Recommended for Development)
+### Using Supabase (Recommended - Free Tier Available)
+
+Supabase provides a free PostgreSQL database that's perfect for development and small projects.
+
+#### 2.1 Create Supabase Account
+
+1. **Go to Supabase:**
+   - Visit https://supabase.com
+   - Click "Start your project" or "Sign in"
+
+2. **Sign up/Login:**
+   - Use GitHub, Google, or email to create account
+   - Free tier includes 500MB database, 2GB bandwidth
+
+#### 2.2 Create New Project
+
+1. **Click "New Project"** (or "Create new project")
+
+2. **Fill in project details:**
+   - **Name:** `support-auditor` (or any name you prefer)
+   - **Database Password:** Create a strong password (save this!)
+   - **Region:** Choose closest to you
+   - **Pricing Plan:** Free (or Pro if you need more)
+
+3. **Click "Create new project"**
+   - Wait 1-2 minutes for project to be created
+
+#### 2.3 Get Database Connection String
+
+1. **Go to Project Settings:**
+   - Click on your project
+   - Click "Settings" (gear icon) in left sidebar
+   - Click "Database" under "Project Settings"
+
+2. **Find Connection String:**
+   - Scroll to "Connection string" section
+   - Look for "URI" or "Connection string"
+   - Click "Copy" next to the connection string
+
+   It will look like:
+   ```
+   postgresql://postgres:[YOUR-PASSWORD]@db.xxxxx.supabase.co:5432/postgres
+   ```
+
+3. **Replace password placeholder:**
+   - The connection string has `[YOUR-PASSWORD]` placeholder
+   - Replace it with the password you created in step 2.2
+   - Example:
+     ```
+     postgresql://postgres:MySecurePassword123@db.abcdefgh.supabase.co:5432/postgres
+     ```
+
+4. **Save this connection string** - you'll need it for the `.env` file!
+
+#### 2.4 (Optional) Test Connection
+
+You can test the connection using any PostgreSQL client:
+- **Supabase SQL Editor** (built-in, in your project dashboard)
+- **pgAdmin** (desktop app)
+- **DBeaver** (free database tool)
+- **psql** command line (if installed)
+
+---
+
+### Alternative: Local PostgreSQL
+
+If you prefer local setup:
 
 1. **Install PostgreSQL:**
    - **Windows:** Download from https://www.postgresql.org/download/windows/
@@ -46,34 +112,15 @@ git pull  # Get latest changes
 
 3. **Create database:**
    ```bash
-   # Open PostgreSQL command line
    psql -U postgres
-   
-   # Or if you have a different user:
-   psql -U your_username
-   ```
-
-   Then in psql:
-   ```sql
    CREATE DATABASE support_auditor;
-   \q  -- Exit psql
+   \q
    ```
 
-4. **Note your connection details:**
-   - Default username: `postgres`
-   - Default password: (whatever you set during installation)
-   - Default port: `5432`
-   - Database name: `support_auditor`
-
-### Option B: Cloud PostgreSQL (Alternative)
-
-Use services like:
-- **AWS RDS** (PostgreSQL)
-- **Heroku Postgres**
-- **ElephantSQL** (free tier available)
-- **Supabase** (free tier available)
-
-Get the connection string from your provider (format: `postgresql://user:password@host:port/database`)
+4. **Connection string format:**
+   ```
+   postgresql://postgres:your_password@localhost:5432/support_auditor
+   ```
 
 ---
 
@@ -184,8 +231,21 @@ pip install -r requirements.txt
 
 Create a file named `.env` in the `backend/` directory:
 
+**For Supabase (Recommended):**
 ```env
-# Database Configuration
+# Database Configuration (Supabase)
+DATABASE_URL=postgresql://postgres:your_password@db.xxxxx.supabase.co:5432/postgres
+
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+AWS_REGION=us-east-1
+S3_BUCKET_NAME=your-bucket-name
+```
+
+**For Local PostgreSQL:**
+```env
+# Database Configuration (Local)
 DATABASE_URL=postgresql://postgres:your_password@localhost:5432/support_auditor
 
 # AWS S3 Configuration
@@ -196,13 +256,23 @@ S3_BUCKET_NAME=your-bucket-name
 ```
 
 **Replace:**
-- `your_password` with your PostgreSQL password
+- **For Supabase:** Use the connection string you copied from Supabase (with your actual password)
+- **For Local:** `your_password` with your PostgreSQL password
 - `your_access_key_here` with AWS Access Key ID
 - `your_secret_key_here` with AWS Secret Access Key
 - `us-east-1` with your S3 bucket region
 - `your-bucket-name` with your actual bucket name
 
-**Example:**
+**Example (Supabase):**
+```env
+DATABASE_URL=postgresql://postgres:MySecurePass123@db.abcdefghijklmnop.supabase.co:5432/postgres
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+AWS_REGION=us-east-1
+S3_BUCKET_NAME=support-auditor-calls-2025
+```
+
+**Example (Local):**
 ```env
 DATABASE_URL=postgresql://postgres:mypassword123@localhost:5432/support_auditor
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
@@ -234,8 +304,32 @@ INFO  [alembic.runtime.migration] Running upgrade  -> abc123, Initial migration
 
 ### 4.6 Verify Database Tables
 
+**Option A: Using Supabase Dashboard (Easiest)**
+
+1. Go to your Supabase project dashboard
+2. Click "Table Editor" in the left sidebar
+3. You should see:
+   - `alembic_version` table
+   - `calls` table
+
+**Option B: Using Supabase SQL Editor**
+
+1. In Supabase dashboard, click "SQL Editor"
+2. Run this query:
+   ```sql
+   SELECT table_name 
+   FROM information_schema.tables 
+   WHERE table_schema = 'public';
+   ```
+3. Should show `alembic_version` and `calls`
+
+**Option C: Using psql (Local or Remote)**
+
 ```bash
-# Connect to PostgreSQL
+# For Supabase (use connection string from settings)
+psql "postgresql://postgres:your_password@db.xxxxx.supabase.co:5432/postgres"
+
+# For Local
 psql -U postgres -d support_auditor
 
 # Check tables
@@ -346,8 +440,26 @@ npm run dev
    - Should see file in `calls/` folder
 
 3. **Check Database:**
+
+   **Using Supabase Dashboard:**
+   - Go to Supabase project → "Table Editor"
+   - Click on `calls` table
+   - Should see your call record with all fields
+
+   **Using Supabase SQL Editor:**
+   - Go to "SQL Editor" in Supabase dashboard
+   - Run: `SELECT * FROM calls;`
+   - Should see your call record
+
+   **Using psql:**
    ```bash
+   # For Supabase
+   psql "postgresql://postgres:your_password@db.xxxxx.supabase.co:5432/postgres"
+   
+   # For Local
    psql -U postgres -d support_auditor
+   
+   # Run query
    SELECT * FROM calls;
    ```
    Should see your call record.
@@ -362,7 +474,14 @@ npm run dev
 ```
 psycopg2.OperationalError: connection refused
 ```
-**Solution:**
+**Solution (Supabase):**
+- Verify `DATABASE_URL` in `.env` matches Supabase connection string exactly
+- Make sure password in connection string is correct (replace `[YOUR-PASSWORD]` placeholder)
+- Check Supabase project is active (not paused)
+- Test connection in Supabase SQL Editor first
+- Ensure connection string uses port `5432` (not `6543`)
+
+**Solution (Local):**
 - Check PostgreSQL is running
 - Verify `DATABASE_URL` in `.env` is correct
 - Test connection: `psql -U postgres -d support_auditor`
