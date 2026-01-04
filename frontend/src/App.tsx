@@ -7,14 +7,27 @@ function App() {
 
   return (
     <div>
-      <nav style={{ padding: '1rem', borderBottom: '1px solid #ccc', marginBottom: '1rem' }}>
-        <button onClick={() => setPage('upload')} style={{ marginRight: '1rem' }}>Upload Call</button>
-        <button onClick={() => setPage('calls')}>Calls List</button>
+      <nav className="nav-container">
+        <div className="nav-content">
+          <div className="nav-brand">Support Auditor</div>
+          <div className="nav-links">
+            <button
+              className={`nav-button ${page === 'upload' ? 'active' : ''}`}
+              onClick={() => setPage('upload')}
+            >
+              📤 Upload
+            </button>
+            <button
+              className={`nav-button ${page === 'calls' ? 'active' : ''}`}
+              onClick={() => setPage('calls')}
+            >
+              📋 Calls
+            </button>
+          </div>
+        </div>
       </nav>
 
-      <div style={{ padding: '0 1rem' }}>
-        {page === 'upload' ? <Upload /> : <Calls />}
-      </div>
+      {page === 'upload' ? <Upload /> : <Calls />}
     </div>
   )
 }
