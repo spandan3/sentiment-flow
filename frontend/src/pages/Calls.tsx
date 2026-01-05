@@ -23,33 +23,62 @@ const Calls = () => {
     fetchCalls();
   }, []);
 
-  if (loading) return <p>Loading calls...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (loading) {
+    return (
+      <div className="calls-page">
+        <div className="calls-header">
+          <h1 className="calls-title">Calls List</h1>
+        </div>
+        <div className="calls-loading">
+          <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Loading calls…</span>
+          <div className="skeleton-line" />
+          <div className="skeleton-line" />
+          <div className="skeleton-line" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="calls-page">
+        <p className="calls-error">{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Calls List</h1>
-      <button onClick={fetchCalls} style={{ marginBottom: '1rem' }}>Refresh</button>
-      
+    <div className="calls-page">
+      <div className="calls-header">
+        <h1 className="calls-title">Calls List</h1>
+        <button className="btn btn-secondary calls-refresh" onClick={fetchCalls}>
+          Refresh
+        </button>
+      </div>
+
       {calls.length === 0 ? (
-        <p>No calls uploaded yet.</p>
+        <p className="calls-empty">No calls uploaded yet.</p>
       ) : (
-        <table border={1} style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <table className="calls-table">
           <thead>
             <tr>
-              <th style={{ padding: '8px' }}>Call ID</th>
-              <th style={{ padding: '8px' }}>Original Filename</th>
-              <th style={{ padding: '8px' }}>Status</th>
-              <th style={{ padding: '8px' }}>Created At</th>
+              <th>Call ID</th>
+              <th>Original Filename</th>
+              <th>Status</th>
+              <th>Created At</th>
             </tr>
           </thead>
           <tbody>
             {calls.map((call) => (
               <tr key={call.id}>
-                <td style={{ padding: '8px' }}>{call.id}</td>
-                <td style={{ padding: '8px' }}>{call.original_filename}</td>
-                <td style={{ padding: '8px' }}>{call.status}</td>
-                <td style={{ padding: '8px' }}>{new Date(call.created_at).toLocaleString()}</td>
+                <td>{call.id}</td>
+                <td>{call.original_filename}</td>
+                <td>
+                  <span className={`call-status ${call.status.toLowerCase()}`}>
+                    {call.status}
+                  </span>
+                </td>
+                <td>{new Date(call.created_at).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
