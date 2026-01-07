@@ -15,6 +15,9 @@ class CallRead(CallBase):
     created_at: datetime
     status: str
     duration_sec: Optional[int] = None
+    transcript: Optional[str] = None
+    sentiment_score: Optional[float] = None
+    summary: Optional[str] = None
 
     class Config:
         from_attributes = True
