@@ -30,4 +30,3 @@ def downgrade() -> None:
     op.drop_column("calls", "transcript")
 
 
-

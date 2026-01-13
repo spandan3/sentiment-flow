@@ -55,7 +55,7 @@ const Calls = () => {
           Refresh
         </button>
       </div>
-
+      
       {calls.length === 0 ? (
         <p className="calls-empty">No calls uploaded yet.</p>
       ) : (

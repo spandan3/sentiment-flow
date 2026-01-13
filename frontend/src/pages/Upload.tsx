@@ -115,7 +115,7 @@ const Upload = () => {
       
       // Reset after success
       setTimeout(() => {
-        setFile(null);
+      setFile(null);
         setUploadProgress(0);
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
@@ -170,15 +170,15 @@ const Upload = () => {
           </div>
         </div>
 
-        <input
+          <input
           ref={fileInputRef}
-          id="file-input"
-          type="file"
-          accept="audio/*"
-          onChange={handleFileChange}
-          disabled={uploading}
+            id="file-input"
+            type="file"
+            accept="audio/*"
+            onChange={handleFileChange}
+            disabled={uploading}
           className="file-input"
-        />
+          />
 
         {file && (
           <div className="file-info">
@@ -243,10 +243,10 @@ const Upload = () => {
                 onClick={handleRemoveFile}
               >
                 Cancel
-              </button>
+        </button>
             )}
           </div>
-        </form>
+      </form>
       </div>
     </div>
   );
